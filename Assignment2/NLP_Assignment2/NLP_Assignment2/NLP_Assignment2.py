@@ -11,87 +11,202 @@ import matplotlib as mpl
 import os.path
 from typing import Callable
 from nltk.corpus import brown
-%matplotlib inline
-
-mycorpus = nltk.corpus.reader.TaggedCorpusReader("", "POS_German_train.txt")
-
-print(mycorpus.tagged_words())
+import re
+# %matplotlib inline
 
 
-raw = 'I do not like green eggs and ham.'
-tokens = nltk.word_tokenize(raw)
-default_tagger = nltk.DefaultTagger('NOUN')
+class POSTagger():
+    # mapping Stuttgart-Tübingen-Tagset STTS to Universal Part-of-Speech Tagset
+    mapping = {
+        'ADJA': 'ADJ',
+        'ADJD': 'ADJ',
+        'ADV': 'ADV',
+        'APPR': 'ADP',
+        'APPRART': 'ADP',
+        'APPO': 'ADP',
+        'APZR': 'ADP',
+        'ART': 'DET',
+        'CARD': 'NUM',
+        'FM': 'X',
+        'ITJ': 'X',
+        'KOUI': 'CONJ',
+        'KOUS': 'CONJ',
+        'KON': 'CONJ',
+        'KOKOM': 'CONJ',
+        'NN': 'NOUN',
+        'NE': 'NOUN',
+        'PDS': 'PRON',
+        'PDAT': 'PRON',
+        'PIS': 'PRON',
+        'PIAT': 'PRON',
+        'PIDAT': 'PRON',
+        'PPER': 'PRON',
+        'PPOSS': 'PRON',
+        'PPOSAT': 'PRON',
+        'PRELS': 'PRON',
+        'PRELAT': 'PRON',
+        'PRF': 'PRON',
+        'PWS': 'PRON',
+        'PWAT': 'PRON',
+        'PWAV': 'PRON',
+        'PAV': 'ADV',
+        'PTKZU': 'PRT',
+        'PTKNEG': 'PRT',
+        'PTKVZ': 'PRT',
+        'PTKANT': 'PRT',
+        'PTKA': 'PRT',
+        'SGML': 'X',
+        'SPELL': 'X',
+        'TRUNC': 'PRT',
+        'VVFIN': 'VERB',
+        'VVIMP': 'VERB',
+        'VVINF': 'VERB',
+        'VVIZU': 'VERB',
+        'VVPP': 'VERB',
+        'VAFIN': 'VERB',
+        'VAIMP': 'VERB',
+        'VAINF': 'VERB',
+        'VAPP': 'VERB',
+        'VMFIN': 'VERB',
+        'VMINF': 'VERB',
+        'VMPP': 'VERB',
+        'XY': 'X',
+        '$,': ',',
+        '$.': '.',
+        '$(': 'X',
+        }
+
+    regex_patterns = [
+        (r'.*ing$', 'VERB'),  # gerunds
+        (r'.*ed$', 'VERB'),  # simple past
+        (r'.*es$', 'VERB'),  # 3rd singular present
+        (r'.*ould$', 'VERB'),  # modals
+        (r'and', 'CONJ'),  # and
+        (r'to', 'PRT'),  # to
+        (r'^th.*', 'DET'),  # the
+        (r'o[nf]', 'ADP'),  # of,on
+        (r'[.,;!?\'`]', '.'),  # . and , etc.
+        (r'.*\'s$', 'NOUN'),  # possessive nouns
+        (r'.*s$', 'NOUN'),  # plural nouns
+        (r'^‐?[0‐9]+(.[0‐9]+)?$', 'NUM'),  # cardinal numbers
+        (r'.*ly$', 'ADV'),  # adverbs
+        (r'.*', 'NOUN')  # nouns (default)
+    ]
 
 
-brown_tagged_sents = brown.tagged_sents(categories='news', tagset='universal')
-brown_sents = brown.sents(categories='news')
+    def __init__(self, path):
+        self.tagged_sents, self.sents, self.tagged_words, self.words = self.__preprocessing(path)
 
-patterns = [
-    (r'.*ing$', 'VERB'),  # gerunds
-    (r'.*ed$', 'VERB'),  # simple past
-    (r'.*es$', 'VERB'),  # 3rd singular present
-    (r'.*ould$', 'VERB'),  # modals
-    (r'and', 'CONJ'),  # and
-    (r'to', 'PRT'),  # to
-    (r'^th.*', 'DET'),  # the
-    (r'o[nf]', 'ADP'),  # of,on
-    (r'[.,;!?\'`]', '.'),  # . and , etc.
-    (r'.*\'s$', 'NOUN'),  # possessive nouns
-    (r'.*s$', 'NOUN'),  # plural nouns
-    (r'^‐?[0‐9]+(.[0‐9]+)?$', 'NUM'),  # cardinal numbers
-    (r'.*ly$', 'ADV'),  # adverbs
-    (r'.*', 'NOUN')  # nouns (default)
-]
+        self.tagged_sents_train = []
+        self.tagged_sents_test = []
+        self.sents_train = []
+        self.sents_test = []
+        self.tagged_words_train = []
+        self.tagged_words_test = []
 
+        self.path = path
+        self.currentTagger = nltk.DefaultTagger('NOUN')
+        
+        self.__splitt_set()
 
+    def __preprocessing(self, path):
+        """ returns tagged_sents, sents, tagged_word, words """
+        with open(path) as f:
+            tagged_sents = []
+            sents = []
+            tagged_words = []
+            words = []
 
-regexp_tagger = nltk.RegexpTagger(patterns)
+            content = f.readlines()
+    
+            for line in content:
+                tagged_sents.append([])
+                sents.append([])
+                line = line.strip()
+                line = re.sub(";$", '', line)
+       
+                for word, tag in re.findall('([^\s;]+)/([\w$(,.]+)', line):
 
-fd = nltk.FreqDist(brown.words(categories='news'))  # frequency distribution of words
+                    if(tag not in mapping):
+                        print(f"cannot find tag {t} in mapping")
+                        continue
 
-cfd = nltk.ConditionalFreqDist(brown.tagged_words(categories='news', tagset='universal'))
-likely_100_tags = dict((word, cfd[word].max()) for (word, _) in fd.most_common(10000))
+                    tagged_sents[-1].append((word, self.mapping[tag]))
+                    sents[-1].append(word)
+                    tagged_words.append((word, self.mapping[tag]))
+                    words.append(word)
+            
+            return (tagged_sents, sents, tagged_words, words)
 
-baseline_tagger = nltk.UnigramTagger(model=likely_100_tags,  # assign 'NOUN' for OOV words
-                                     backoff=nltk.DefaultTagger('NOUN'))
+    def __splitt_set(self):
+        p_train = 0.8
 
+        n = len(self.tagged_sents)
+        n_train = int(n * p_train)
 
-# Splitt data set
-size = int(len(brown.words(categories='news')) * 0.8)
+        self.tagged_sents_train = self.tagged_sents[:n_train]
+        self.tagged_sents_test   = self.tagged_sents[n_train:]
 
-train_set = brown.tagged_words(categories='news')[:size]
-eval_set = brown.tagged_words(categories='news')[size:]
+        self.sents_train = self.sents[:n_train]
+        self.sents_test = self.sents[n_train:]
 
-# Splitt data set
-size = int(len(brown_tagged_sents) * 0.8)
-train_sents = brown_tagged_sents[:size]
-test_sents = brown_tagged_sents[size:]
+        self.tagged_words_train = self.tagged_words[:n_train]
+        self.tagged_words_test = self.tagged_words[n_train:]
 
-t0 = nltk.DefaultTagger('NOUN')
-t1 = nltk.RegexpTagger(patterns, backoff=t0)
-t2 = nltk.UnigramTagger(model=likely_100_tags, backoff=t1)
-t3 = nltk.UnigramTagger(train_sents, backoff=t2)
-t4 = nltk.BigramTagger(train_sents, backoff=t3)
+    def get_regex_tagger(self):
+        return nltk.RegexpTagger(self.regex_patterns)
 
-# t0 = nltk.DefaultTagger('NN')
-# t1 = nltk.UnigramTagger(train_sents, backoff=t0)
-# t3 = nltk.UnigramTagger(model=likely_100_tags, backoff=t1)
-# t4 = nltk.BigramTagger( train_sents, backoff=t3)
-t_final = t4
+    def get_likely_m_tags(self, n : int = 10000):
+        fd = nltk.FreqDist(self.words)  # frequency distribution of words
+        cfd = nltk.ConditionalFreqDist(self.tagged_words)
+        return dict((word, cfd[word].max()) for (word, _) in fd.most_common(n))
 
-print("accuracy of Bigram  Tagger: ", t_final.evaluate(test_sents))
-# print("pos tag: ", nltk.pos_tag(test_sents) )
+    def add_regex_tagget(self):
+        tagger = nltk.RegexpTagger(self.regex_patterns, backoff=self.currentTagger)
+        self.currentTagger = tagger
+        return self
 
+    def add_likely_n_tags_tagger(self, n):
+        tagger = nltk.UnigramTagger(model=self.get_likely_m_tags(n), backoff=self.currentTagger)
+        self.currentTagger = tagger
+        return self
 
+    def add_unigram_tagger(self):
+        tagger = nltk.UnigramTagger(self.tagged_sents_train, backoff=self.currentTagger)
+        self.currentTagger = tagger
+        return self
 
-test_tags = [tag for sent in brown.sents(categories='editorial') for (word, tag) in t_final.tag(sent)]
-gold_tags = [tag for (word, tag) in brown.tagged_words(categories='editorial', tagset='universal')]
+    def add_bigram_tagger(self):
+        tagger = nltk.BigramTagger(self.tagged_sents_train, backoff=self.currentTagger)
+        self.currentTagger = tagger
+        return self
 
-print(nltk.ConfusionMatrix(gold_tags, test_tags))
-print(t_final.evaluate(brown.tagged_sents(categories='editorial', tagset='universal')))
+    def add_trigram_tagger(self):
+        tagger = nltk.TrigramTagger(self.tagged_sents_train, backoff=self.currentTagger)
+        self.currentTagger = tagger
+        return self
 
-pos_tag = nltk.pos_tag(brown.words(categories='editorial'), tagset='universal')
-test_tags = [tag for (word, tag) in pos_tag]
-conf_mat = nltk.ConfusionMatrix(gold_tags, test_tags)
-print(conf_mat)
-print(nltk.accuracy(gold_tags, test_tags))
+    def add_hmm_tagger(self):
+        nltk.HiddenMarkovModelTagger()
+
+    def eval(self):
+        print("accuracy train: ", self.currentTagger.evaluate(self.tagged_sents_train))
+        print("accuracy test: ", self.currentTagger.evaluate(self.tagged_sents_test))
+
+    def test(self, path):
+        tagged_sents, sents, tagged_words, words = self.__preprocessing(path)
+        test_tags = [tag for sent in sents for (word, tag) in self.currentTagger.tag(sent)]
+        gold_tags = [tag for (word, tag) in tagged_words]
+        print(nltk.ConfusionMatrix(gold_tags, test_tags))
+        print("accuracy eval: ", self.currentTagger.evaluate(tagged_sents))
+
+tagger = POSTagger('POS_German_train.txt')
+
+tagger.add_regex_tagget()
+tagger.add_likely_n_tags_tagger(100)
+tagger.add_unigram_tagger()
+tagger.add_bigram_tagger()
+tagger.add_trigram_tagger()
+
+tagger.eval()
+tagger.test("POS_German_minitest.txt")
