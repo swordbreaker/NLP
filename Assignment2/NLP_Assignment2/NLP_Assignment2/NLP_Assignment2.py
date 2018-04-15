@@ -127,7 +127,7 @@ class POSTagger():
        
                 for word, tag in re.findall('([^\s;]+)/([\w$(,.]+)', line):
 
-                    if(tag not in mapping):
+                    if(tag not in self.mapping):
                         print(f"cannot find tag {t} in mapping")
                         continue
 
@@ -186,8 +186,14 @@ class POSTagger():
         self.currentTagger = tagger
         return self
 
-    def add_hmm_tagger(self):
-        nltk.HiddenMarkovModelTagger()
+    def use_hmm_tagger(self):
+        symbols = set(self.words)
+        tag_set = set([tag for word, tag in self.tagged_words])
+        tagger = nltk.HiddenMarkovModelTrainer(tag_set, symbols)
+        tagger = tagger.train_supervised(self.tagged_sents_train)
+        self.currentTagger = tagger
+        return self
+
 
     def eval(self):
         print("accuracy train: ", self.currentTagger.evaluate(self.tagged_sents_train))
@@ -207,6 +213,7 @@ tagger.add_likely_n_tags_tagger(100)
 tagger.add_unigram_tagger()
 tagger.add_bigram_tagger()
 tagger.add_trigram_tagger()
+#tagger.use_hmm_tagger()
 
 tagger.eval()
 tagger.test("POS_German_minitest.txt")
