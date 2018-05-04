@@ -1,0 +1,139 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>ac85cac6-b974-4989-8576-1ce5da78f814</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>keras_spacy_example.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Assignment3</Name>
+    <RootNamespace>Assignment3</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Assignment3.py" />
+    <Compile Include="classification\classifier.py" />
+    <Compile Include="classification\data_set.py" />
+    <Compile Include="classification\gradien_boost\gradien_boost_classifier.py" />
+    <Compile Include="classification\gradien_boost\__init__.py" />
+    <Compile Include="classification\multilayer_perceptron\hyperparameter_tuning.py" />
+    <Compile Include="classification\multilayer_perceptron\multilayer_perceptron.py" />
+    <Compile Include="classification\multilayer_perceptron\multilayer_perceptron_tfhub.py" />
+    <Compile Include="classification\multilayer_perceptron\__init__.py" />
+    <Compile Include="classification\naive_bayes\multinomial_naive_bayes.py" />
+    <Compile Include="classification\naive_bayes\__init__.py" />
+    <Compile Include="classification\random_forest\random_forest_classifier.py" />
+    <Compile Include="classification\random_forest\__init__.py" />
+    <Compile Include="classification\RNN\Imdb_sample.py" />
+    <Compile Include="classification\RNN\keras_rnn.py" />
+    <Compile Include="classification\RNN\mnist_sample.py" />
+    <Compile Include="classification\RNN\rnn_classifier.py" />
+    <Compile Include="classification\RNN\simple_tensorflow_rnn.py" />
+    <Compile Include="classification\RNN\__init__.py" />
+    <Compile Include="classification\sklearn_classifier.py" />
+    <Compile Include="classification\svm\sgd.py" />
+    <Compile Include="classification\svm\svm.py" />
+    <Compile Include="classification\svm\__init__.py" />
+    <Compile Include="classification\ticketing_data.py" />
+    <Compile Include="classification\util\confusion_matrix.py" />
+    <Compile Include="classification\util\logger.py" />
+    <Compile Include="classification\util\__init__.py" />
+    <Compile Include="classification\voting\voting_classifier.py" />
+    <Compile Include="classification\voting\__init__.py" />
+    <Compile Include="classification\__init__.py" />
+    <Compile Include="keras_spacy_example.py" />
+    <Compile Include="tests\test_gradient_boost.py" />
+    <Compile Include="tests\test_ldap.py" />
+    <Compile Include="tests\test_multilayer_perceptron.py" />
+    <Compile Include="tests\test_naive_bayes.py" />
+    <Compile Include="tests\test_random_forest.py" />
+    <Compile Include="tests\test_rest_api.py" />
+    <Compile Include="tests\test_rnn.py" />
+    <Compile Include="tests\test_sgd.py" />
+    <Compile Include="tests\test_svm.py" />
+    <Compile Include="tests\test_voting_classifier.py" />
+    <Compile Include="tests\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="classification\" />
+    <Folder Include="classification\gradien_boost\" />
+    <Folder Include="classification\gradien_boost\__pycache__\" />
+    <Folder Include="classification\multilayer_perceptron\" />
+    <Folder Include="classification\multilayer_perceptron\__pycache__\" />
+    <Folder Include="classification\naive_bayes\" />
+    <Folder Include="classification\naive_bayes\__pycache__\" />
+    <Folder Include="classification\random_forest\" />
+    <Folder Include="classification\random_forest\__pycache__\" />
+    <Folder Include="classification\RNN\" />
+    <Folder Include="classification\RNN\logs\" />
+    <Folder Include="classification\RNN\saved_model\" />
+    <Folder Include="classification\RNN\__pycache__\" />
+    <Folder Include="classification\svm\" />
+    <Folder Include="classification\svm\__pycache__\" />
+    <Folder Include="classification\util\" />
+    <Folder Include="classification\util\__pycache__\" />
+    <Folder Include="classification\voting\" />
+    <Folder Include="classification\voting\__pycache__\" />
+    <Folder Include="classification\__pycache__\" />
+    <Folder Include="data\" />
+    <Folder Include="results\" />
+    <Folder Include="tests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Amazon_Baby_train.txt" />
+    <Content Include="Assignment_3.pdf" />
+    <Content Include="classification\gradien_boost\__pycache__\gradien_boost_classifier.cpython-36.pyc" />
+    <Content Include="classification\gradien_boost\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\multilayer_perceptron\__pycache__\hyperparameter_tuning.cpython-36.pyc" />
+    <Content Include="classification\multilayer_perceptron\__pycache__\multilayer_perceptron.cpython-36.pyc" />
+    <Content Include="classification\multilayer_perceptron\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\naive_bayes\__pycache__\gaussian_naive_bayes.cpython-36.pyc" />
+    <Content Include="classification\naive_bayes\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\random_forest\__pycache__\random_forest_classifier.cpython-36.pyc" />
+    <Content Include="classification\random_forest\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\RNN\imdb_100_2018-03-15-23-20-40.h5" />
+    <Content Include="classification\RNN\imdb_100_2018-03-16-00-31-47.h5" />
+    <Content Include="classification\RNN\imdb_100_2018-03-20-00-11-35.h5" />
+    <Content Include="classification\RNN\imdb_50_2018-03-15-22-22-14.h5" />
+    <Content Include="classification\RNN\logs\events.out.tfevents.1521462699.LAPTOP-AI5PKE28" />
+    <Content Include="classification\RNN\logs\events.out.tfevents.1521485307.MIGHTYBOX" />
+    <Content Include="classification\RNN\saved_model\rnn.model" />
+    <Content Include="classification\svm\__pycache__\svm.cpython-36.pyc" />
+    <Content Include="classification\svm\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\util\__pycache__\confusion_matrix.cpython-36.pyc" />
+    <Content Include="classification\util\__pycache__\logger.cpython-36.pyc" />
+    <Content Include="classification\util\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\voting\__pycache__\voting_classifier.cpython-36.pyc" />
+    <Content Include="classification\voting\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="classification\__pycache__\classifier.cpython-36.pyc" />
+    <Content Include="classification\__pycache__\data_set.cpython-36.pyc" />
+    <Content Include="classification\__pycache__\sklearn_classifier.cpython-36.pyc" />
+    <Content Include="classification\__pycache__\ticketing_data.cpython-36.pyc" />
+    <Content Include="classification\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
