@@ -40,11 +40,8 @@ def load_doc_vec(df: pd.DataFrame):
         for i, doc in enumerate(docs):
             x[i,:] = doc.vector
 
-        #for i in range(df.shape[0]):
-        #    tokens = nlp(df['review'][i])
-        #    x[i,:] = tokens.vector
-        #np.save("data/x_document.npy", x)
-        #np.save("data/y_document.npy", y)
+        np.save("data/x_document.npy", x)
+        np.save("data/y_document.npy", y)
     return x, y
 
 def load_word_vecs(df: pd.DataFrame, max_lenght = 5000):
@@ -74,40 +71,38 @@ def load_word_vecs(df: pd.DataFrame, max_lenght = 5000):
         np.save("data/y_document.npy", y)
     return x, y
 
-df = load_document()
-ds = DataSet.from_np_array(df['review'], np.asarray(df['sentimens'], dtype='int32'), class_names=[1,2,3,4,5], shuffle=True)
+def rnn():
 
-#disable cuda
-#import os
-#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
-#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+    df = load_document()
+    ds = DataSet.from_np_array(df['review'], np.asarray(df['sentimens'], dtype='int32'), class_names=[1,2,3,4,5], shuffle=True)
 
-path = "checkpoints/best.hdf5"
+    #disable cuda
+    #import os
+    #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
+    #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-with Logger("rnn", root='') as l:
-    l.log_and_print(ds)
-    l.log("")
+    path = "checkpoints/best.hdf5"
 
-    if os.path.isfile(path):
-        classifier = SentimentAnalyser.load(path, ds, logger=l)
-    else:
-        classifier = SentimentAnalyser(ds, logger=l)
+    with Logger("rnn", root='') as l:
+        l.log_and_print(ds)
+        l.log("")
 
-    classifier.fit("checkpoints/", 10)
-    classifier.validate()
-    classifier.metrics()
-    classifier.plot_confusion_matrix()
+        if os.path.isfile(path):
+            classifier = SentimentAnalyser.load(path, ds, logger=l)
+        else:
+            classifier = SentimentAnalyser(ds, logger=l)
 
-def old():
+        classifier.fit("checkpoints/", 10)
+        classifier.validate()
+        classifier.metrics()
+        classifier.plot_confusion_matrix()
+
+def simple():
 
     df = load_document()
     x, y = load_doc_vec(df)
 
     ds = DataSet.from_np_array(x, y, class_names=[1,2,3,4,5], p_train=0.8, p_val=0.1, shuffle=True)
-    #ds.plot_distribution('train')
-    #ds.plot_distribution('val')
-    #ds.plot_distribution('test')
-    #ds.plot_distribution('all')
 
     with Logger("svm", root='') as l:
         l.log_and_print(ds)
@@ -120,3 +115,5 @@ def old():
         classifier.validate()
         classifier.metrics()
         classifier.plot_confusion_matrix()
+
+simple()

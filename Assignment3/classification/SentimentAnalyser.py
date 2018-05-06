@@ -1,13 +1,10 @@
 import random
-import pathlib
-import cytoolz
 import numpy
 import keras
 from keras.models import Sequential, model_from_json
 from keras.layers import LSTM, Dense, Embedding, Bidirectional
 from keras.layers import TimeDistributed
 from keras.optimizers import Adam
-from spacy.compat import pickle
 import spacy
 
 from classification import DataSet
@@ -40,21 +37,6 @@ class PlotLearning(keras.callbacks.Callback):
         self.acc.append(logs.get('acc'))
         self.val_acc.append(logs.get('val_acc'))
         self.i += 1
-        #f, (ax1, ax2) = plt.subplots(1, 2, sharex=True)
-        
-        #clear_output(wait=True)
-        
-        #ax1.set_yscale('log')
-        #ax1.plot(self.x, self.losses, label="loss")
-        #ax1.plot(self.x, self.val_losses, label="val_loss")
-        #ax1.legend()
-        
-        #ax2.plot(self.x, self.acc, label="accuracy")
-        #ax2.plot(self.x, self.val_acc, label="validation accuracy")
-        #ax2.legend()
-        
-        #plt.show()
-
 
     def plot(self, logger):
         f, (ax1, ax2) = plt.subplots(1, 2, sharex=True)
@@ -114,10 +96,6 @@ class SentimentAnalyser(Classifier):
         val_X = self.get_features(val_docs, max_length)
         test_X = self.get_features(test_docs, max_length)
 
-        #if by_sentence:
-        #    train_docs, train_labels = get_labelled_sentences(train_docs, train_labels)
-        #    val_docs, ds.y_val = get_labelled_sentences(val_docs, ds.y_val)
-
         ds.x_train = train_X
         ds.x_val = val_X
         ds.x_test = test_X
@@ -161,13 +139,7 @@ class SentimentAnalyser(Classifier):
         return model
 
     def fit(self, chepoint_path, epochs=100):
-        #board_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=1, batch_size=32,
-        #                                             write_graph=True, write_grads=True,
-        #                                             write_images=True, embeddings_freq=0, embeddings_layer_names=True,
-        #                                             embeddings_metadata=True)
-        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chepoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0,
-                                                                    save_best_only=True, save_weights_only=False,
-                                                                    mode='auto', period=1)
+        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chepoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 
         plot = PlotLearning()
 
