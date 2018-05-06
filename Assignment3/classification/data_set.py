@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tabulate import tabulate
-
+import os
 
 class DataSet(object):
     """class for out datasets"""
@@ -105,7 +105,7 @@ class DataSet(object):
         class_tuples = []
 
         for i, c in enumerate(classes):
-            lsum = np.sum(labels == i+1)
+            lsum = np.sum(labels == i)
             class_counts.append(lsum)
             class_tuples.append((classes[i], lsum))
 
@@ -117,6 +117,27 @@ class DataSet(object):
         tick_marks = np.arange(len(classes))
         plt.xticks(tick_marks, classes, rotation=90)
         plt.show()
+
+    def save(self, path: str):
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        np.save(path + "x_test.npy", self.x_test)
+        np.save(path + "y_test.npy", self.y_test)
+        np.save(path + "x_val.npy", self.x_val)
+        np.save(path + "y_val.npy", self.y_val)
+        np.save(path + "x_train.npy", self.x_train)
+        np.save(path + "y_train.npy", self.y_train)
+
+    @staticmethod
+    def load(path:str, class_names:str = None):
+        x_test = np.load(path + "x_test.npy")
+        y_test = np.load(path + "y_test.npy")
+        x_val = np.load(path + "x_val.npy")
+        y_val = np.load(path + "y_val.npy")
+        x_train = np.load(path + "x_train.npy")
+        y_train = np.load(path + "y_train.npy")
+        return DataSet(x_train, y_train, x_val, y_val, x_test, y_test, class_names)
 
     def __str__(self):
         return f"Train set: {self.x_train.shape[0]} samples \nValidation set: {self.x_val.shape[0]} samples \nTest set: {self.x_test.shape[0]} samples"

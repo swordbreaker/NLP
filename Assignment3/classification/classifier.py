@@ -50,18 +50,18 @@ class Classifier():
 
         return (precision, recall, fscore)
 
-    def print_wrong_test(self):
-        idx_offset_length = len(self.ds.y_train) + len(self.ds.y_val)
-        idx_offset = np.zeros(idx_offset_length, dtype=bool)
-        y_true = self.ds.y_test
-        y_pred = self.predict(self.ds.x_test)
-        correct_predicted = np.equal(y_true, y_pred)
-        false_predicted = np.invert(correct_predicted)
-        filter_indexes = np.append(idx_offset, false_predicted)
-        wrong_predicted = list(compress(self.ds.raw_data, filter_indexes))
-        for prediction in wrong_predicted:
-            text = u''.join(prediction).encode('utf-8')
-            self.logger.log_and_print(text)
+    #def print_wrong_test(self):
+    #    idx_offset_length = len(self.ds.y_train) + len(self.ds.y_val)
+    #    idx_offset = np.zeros(idx_offset_length, dtype=bool)
+    #    y_true = self.ds.y_test
+    #    y_pred = self.predict(self.ds.x_test)
+    #    correct_predicted = np.equal(y_true, y_pred)
+    #    false_predicted = np.invert(correct_predicted)
+    #    filter_indexes = np.append(idx_offset, false_predicted)
+    #    wrong_predicted = list(compress(self.ds.raw_data, filter_indexes))
+    #    for prediction in wrong_predicted:
+    #        text = u''.join(prediction).encode('utf-8')
+    #        self.logger.log_and_print(text)
 
     def plot_confusion_matrix(self, show_plot=True):
         y_true = self.ds.y_test

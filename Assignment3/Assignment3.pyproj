@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>ac85cac6-b974-4989-8576-1ce5da78f814</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>keras_spacy_example.py</StartupFile>
+    <StartupFile>Assignment3.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -42,6 +42,9 @@
     <Compile Include="classification\RNN\rnn_classifier.py" />
     <Compile Include="classification\RNN\simple_tensorflow_rnn.py" />
     <Compile Include="classification\RNN\__init__.py" />
+    <Compile Include="classification\SentimentAnalyser.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="classification\sklearn_classifier.py" />
     <Compile Include="classification\svm\sgd.py" />
     <Compile Include="classification\svm\svm.py" />
@@ -54,6 +57,9 @@
     <Compile Include="classification\voting\__init__.py" />
     <Compile Include="classification\__init__.py" />
     <Compile Include="keras_spacy_example.py" />
+    <Compile Include="loadFastText.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_gradient_boost.py" />
     <Compile Include="tests\test_ldap.py" />
     <Compile Include="tests\test_multilayer_perceptron.py" />
@@ -122,6 +128,7 @@
     <Content Include="classification\__pycache__\sklearn_classifier.cpython-36.pyc" />
     <Content Include="classification\__pycache__\ticketing_data.cpython-36.pyc" />
     <Content Include="classification\__pycache__\__init__.cpython-36.pyc" />
+    <Content Include="embed_tweets_de_300M_52D" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>

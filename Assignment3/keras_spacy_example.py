@@ -19,6 +19,9 @@ import thinc.extra.datasets
 from spacy.compat import pickle
 import spacy
 
+from classification import DataSet
+import pandas as pd
+
 
 class SentimentAnalyser(object):
     @classmethod
@@ -91,7 +94,7 @@ def train(train_texts, train_labels, dev_texts, dev_labels,
           lstm_shape, lstm_settings, lstm_optimizer, batch_size=100,
           nb_epoch=5, by_sentence=True):
     print("Loading spaCy")
-    nlp = spacy.load('de_core_news_sm')
+    nlp = spacy.load('en_vectors_web_lg')
     nlp.add_pipe(nlp.create_pipe('sentencizer'))
     embeddings = get_embeddings(nlp.vocab)
     model = compile_lstm(embeddings, lstm_shape, lstm_settings)
@@ -167,6 +170,12 @@ def read_data(data_dir, limit=0):
     return zip(*examples) # Unzips into two lists
 
 
+def load_document():
+    """ returns a dataframe with the collums 'sentimens', 'product', 'review'"""
+    df = pd.read_csv("Amazon_Baby_train.txt", sep=';', header=None)
+    df.columns = ['sentimens', 'product', 'review']
+    return df
+
 @plac.annotations(
     train_dir=("Location of training file or directory"),
     dev_dir=("Location of development file or directory"),
@@ -185,40 +194,45 @@ def main(model_dir=None, train_dir=None, dev_dir=None,
          nr_hidden=64, max_length=100, # Shape
          dropout=0.5, learn_rate=0.001, # General NN config
          nb_epoch=5, batch_size=100, nr_examples=-1):  # Training params
+
+    df = load_document()
+    data_set = DataSet.from_np_array(df['review'], numpy.asarray(df['sentimens'], dtype='int32'), class_names=[1,2,3,4,5], shuffle=True)
+
+    #if model_dir is not None:
+    #    model_dir = pathlib.Path(model_dir)
+    #if train_dir is None or dev_dir is None:
+    #    imdb_data = thinc.extra.datasets.imdb()
+    #if is_runtime:
+    #    if dev_dir is None:
+    #        dev_texts, dev_labels = zip(*imdb_data[1])
+    #    else:
+    #        dev_texts, dev_labels = read_data(dev_dir)
+    #    acc = evaluate(model_dir, dev_texts, dev_labels, max_length=max_length)
+    #    print(acc)
+    #else:
+    #    if train_dir is None:
+    #        train_texts, train_labels = zip(*imdb_data[0])
+    #    else:
+    #        print("Read data")
+    #        train_texts, train_labels = read_data(train_dir, limit=nr_examples)
+    #    if dev_dir is None:
+    #        dev_texts, dev_labels = zip(*imdb_data[1])
+    #    else:
+    #        dev_texts, dev_labels = read_data(dev_dir, imdb_data, limit=nr_examples)
+    #    train_labels = numpy.asarray(train_labels, dtype='int32')
+    #    dev_labels = numpy.asarray(dev_labels, dtype='int32')
+
+    lstm = train(data_set.x_train, data_set.y_train, data_set.x_val, data_set.y_val,
+                    {'nr_hidden': nr_hidden, 'max_length': max_length, 'nr_class': 1},
+                    {'dropout': dropout, 'lr': learn_rate},
+                    {},
+                    nb_epoch=nb_epoch, batch_size=batch_size)
+    weights = lstm.get_weights()
     if model_dir is not None:
-        model_dir = pathlib.Path(model_dir)
-    if train_dir is None or dev_dir is None:
-        imdb_data = thinc.extra.datasets.imdb()
-    if is_runtime:
-        if dev_dir is None:
-            dev_texts, dev_labels = zip(*imdb_data[1])
-        else:
-            dev_texts, dev_labels = read_data(dev_dir)
-        acc = evaluate(model_dir, dev_texts, dev_labels, max_length=max_length)
-        print(acc)
-    else:
-        if train_dir is None:
-            train_texts, train_labels = zip(*imdb_data[0])
-        else:
-            print("Read data")
-            train_texts, train_labels = read_data(train_dir, limit=nr_examples)
-        if dev_dir is None:
-            dev_texts, dev_labels = zip(*imdb_data[1])
-        else:
-            dev_texts, dev_labels = read_data(dev_dir, imdb_data, limit=nr_examples)
-        train_labels = numpy.asarray(train_labels, dtype='int32')
-        dev_labels = numpy.asarray(dev_labels, dtype='int32')
-        lstm = train(train_texts, train_labels, dev_texts, dev_labels,
-                     {'nr_hidden': nr_hidden, 'max_length': max_length, 'nr_class': 1},
-                     {'dropout': dropout, 'lr': learn_rate},
-                     {},
-                     nb_epoch=nb_epoch, batch_size=batch_size)
-        weights = lstm.get_weights()
-        if model_dir is not None:
-            with (model_dir / 'model').open('wb') as file_:
-                pickle.dump(weights[1:], file_)
-            with (model_dir / 'config.json').open('wb') as file_:
-                file_.write(lstm.to_json())
+        with (model_dir / 'model').open('wb') as file_:
+            pickle.dump(weights[1:], file_)
+        with (model_dir / 'config.json').open('wb') as file_:
+            file_.write(lstm.to_json())
 
 
 if __name__ == '__main__':

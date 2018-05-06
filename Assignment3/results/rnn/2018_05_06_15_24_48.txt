@@ -1,0 +1,9 @@
+Train set: 88116 samples 
+Validation set: 29372 samples 
+Test set: 29373 samples
+
+loss: 	 0.70
+accuracy: 	 0.72
+precision: 	 0.70
+recall: 	 0.72
+fscore: 	 0.71
