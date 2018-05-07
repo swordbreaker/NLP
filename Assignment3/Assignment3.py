@@ -74,7 +74,11 @@ def load_word_vecs(df: pd.DataFrame, max_lenght = 5000):
 def rnn():
 
     df = load_document()
-    ds = DataSet.from_np_array(df['review'], np.asarray(df['sentimens'], dtype='int32'), class_names=[1,2,3,4,5], shuffle=True)
+    ds = DataSet.from_np_array(df['review'], np.asarray(df['sentimens'], dtype='int32'), class_names=[1,2,3,4,5], shuffle=True, p_train=0.9, p_val=0.05)
+    ds.plot_distribution('train')
+    ds.plot_distribution('val')
+    ds.plot_distribution('test')
+    ds.plot_distribution('all')
 
     #disable cuda
     #import os
@@ -92,7 +96,7 @@ def rnn():
         else:
             classifier = SentimentAnalyser(ds, logger=l)
 
-        classifier.fit("checkpoints/", 10)
+        classifier.fit("checkpoints/", 2)
         classifier.validate()
         classifier.metrics()
         classifier.plot_confusion_matrix()
@@ -116,4 +120,4 @@ def simple():
         classifier.metrics()
         classifier.plot_confusion_matrix()
 
-simple()
+rnn()

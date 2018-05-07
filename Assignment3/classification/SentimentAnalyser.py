@@ -2,8 +2,8 @@ import random
 import numpy
 import keras
 from keras.models import Sequential, model_from_json
-from keras.layers import LSTM, Dense, Embedding, Bidirectional
-from keras.layers import TimeDistributed
+from keras.layers import LSTM, Dense, Embedding, Bidirectional, GRU
+from keras.layers import TimeDistributed, Conv2D, Reshape, Masking
 from keras.optimizers import Adam
 import spacy
 
@@ -76,7 +76,7 @@ class SentimentAnalyser(Classifier):
         dataset.y_val = keras.utils.to_categorical(dataset.y_val)
         dataset.y_test = keras.utils.to_categorical(dataset.y_test)
 
-        rnn_shape = {'nr_hidden': 64, 'max_length': max_lenght, 'nr_class': len(dataset.class_names)}
+        rnn_shape = {'nr_hidden': 16, 'max_length': max_lenght, 'nr_class': len(dataset.class_names)}
         rnn_settings = {'dropout': 0.5, 'lr': 0.001}
 
         if model is None:
@@ -84,6 +84,8 @@ class SentimentAnalyser(Classifier):
         else:
             self.model = model
 
+
+        print(self.model.summary())
         return super().__init__(dataset, logger=logger)
 
     def preprocess(self, nlp, ds: "DataSet", max_length):
@@ -129,17 +131,23 @@ class SentimentAnalyser(Classifier):
                 mask_zero=True
             )
         )
+        
+        #model.add(Reshape((300, 300, 1)))
+        
+        #model.add(Conv2D(150, kernel_size=(9, 9), strides=(1, 1), activation='relu', padding='same'))
+        #model.add(Reshape((300, 300, 0)))
+        #model.add(Masking(mask_value=0))
+
         model.add(TimeDistributed(Dense(shape['nr_hidden'], use_bias=False)))
-        model.add(Bidirectional(LSTM(shape['nr_hidden'],
+        model.add(Bidirectional(GRU(shape['nr_hidden'],
                                      recurrent_dropout=settings['dropout'],
                                      dropout=settings['dropout'])))
         model.add(Dense(shape['nr_class'], activation='sigmoid'))
-        model.compile(optimizer=Adam(lr=settings['lr']), loss='categorical_crossentropy',
-		      metrics=['accuracy'])
+        model.compile(optimizer=Adam(lr=settings['lr']), loss='categorical_crossentropy', metrics=['accuracy'])
         return model
 
     def fit(self, chepoint_path, epochs=100):
-        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chepoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
+        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chepoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=2)
 
         plot = PlotLearning()
 

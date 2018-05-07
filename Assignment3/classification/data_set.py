@@ -65,7 +65,7 @@ class DataSet(object):
                       p_val=0.2, shuffle=False):
 
         if shuffle:
-            np.random.seed(42)
+            np.random.seed(43)
             idx = np.arange(x.shape[0])
             np.random.shuffle(idx)
             x = x[idx]
