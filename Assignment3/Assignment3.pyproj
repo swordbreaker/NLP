@@ -26,6 +26,9 @@
     <Compile Include="Assignment3.py" />
     <Compile Include="classification\classifier.py" />
     <Compile Include="classification\data_set.py" />
+    <Compile Include="classification\emotion_analizer.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="classification\gradien_boost\gradien_boost_classifier.py" />
     <Compile Include="classification\gradien_boost\__init__.py" />
     <Compile Include="classification\multilayer_perceptron\hyperparameter_tuning.py" />
