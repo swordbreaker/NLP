@@ -75,19 +75,19 @@ def rnn():
 
     df = load_document()
     ds = DataSet.from_np_array(df['review'], np.asarray(df['sentimens'], dtype='int32'), class_names=[1,2,3,4,5], shuffle=True, p_train=0.9, p_val=0.05)
-    ds.plot_distribution('train')
-    ds.plot_distribution('val')
-    ds.plot_distribution('test')
-    ds.plot_distribution('all')
+    #ds.plot_distribution('train')
+    #ds.plot_distribution('val')
+    #ds.plot_distribution('test')
+    #ds.plot_distribution('all')
 
     #disable cuda
     #import os
     #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
     #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-    path = "checkpoints/best.hdf5"
+    path = "checkpoints/gru/epoch_32-val_los_0.74.hdf5"
 
-    with Logger("rnn", root='') as l:
+    with Logger("gru", root='') as l:
         l.log_and_print(ds)
         l.log("")
 
@@ -96,7 +96,7 @@ def rnn():
         else:
             classifier = SentimentAnalyser(ds, logger=l)
 
-        classifier.fit("checkpoints/", 2)
+        classifier.fit("checkpoints/gru/", 40)
         classifier.validate()
         classifier.metrics()
         classifier.plot_confusion_matrix()
