@@ -146,13 +146,13 @@ class SentimentAnalyser(Classifier):
         model.compile(optimizer=Adam(lr=settings['lr']), loss='categorical_crossentropy', metrics=['accuracy'])
         return model
 
-    def fit(self, chepoint_path, epochs=100):
-        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chepoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=2)
+    def fit(self, chekpoint_path, epochs=100):
+        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chekpoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=2)
 
         plot = PlotLearning()
 
         self.model.fit(self.ds.x_train, self.ds.y_train, validation_data=(self.ds.x_val, self.ds.y_val),
-                          nb_epoch=epochs, batch_size=500, callbacks=[model_checkpoint_callback, plot], verbose=self.verbose)
+                          epochs=epochs, batch_size=500, callbacks=[model_checkpoint_callback, plot], verbose=self.verbose)
 
         plot.plot(self.logger)
 
