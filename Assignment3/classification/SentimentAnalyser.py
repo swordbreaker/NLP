@@ -147,7 +147,7 @@ class SentimentAnalyser(Classifier):
         return model
 
     def fit(self, chekpoint_path, epochs=100):
-        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chekpoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=2)
+        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(chekpoint_path + "epoch_{epoch:02d}-val_los_{val_loss:.2f}.hdf5", monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=4)
 
         plot = PlotLearning()
 
