@@ -85,9 +85,9 @@ def rnn():
     #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
     #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-    path = "checkpoints/best.hdf5"
+    path = "checkpoints/gru/epoch_32-val_los_0.74.hdf5"
 
-    with Logger("rnn", root='') as l:
+    with Logger("gru", root='') as l:
         l.log_and_print(ds)
         l.log("")
 
