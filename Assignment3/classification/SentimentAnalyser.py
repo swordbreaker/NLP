@@ -17,6 +17,8 @@ import os.path
 
 from IPython.display import clear_output
 
+from sklearn.metrics import precision_recall_fscore_support
+
 class PlotLearning(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.i = 0
@@ -175,6 +177,48 @@ class SentimentAnalyser(Classifier):
 
     def save(self, path: str):
         self.model.save(path)
+
+
+    def metrics_task2(self):
+        y_true = self.ds.y_test
+        y_pred = self.predict(self.ds.x_test)
+
+        y_true = [one_hot[3] + one_hot[4] for one_hot in y_true]
+        y_pred = [one_hot[3] + one_hot[4] for one_hot in y_pred]
+        
+        (precision, recall, fscore, _) = precision_recall_fscore_support(y_true, y_pred, average='weighted')
+
+        if self.logger is None:
+            print(f"precision: \t {precision:04.2f}")
+            print(f"recall: \t {recall:04.2f}")
+            print(f"fscore: \t {fscore:04.2f}")
+        else:
+            self.logger.log_and_print(f"precision: \t {precision:04.2f}")
+            self.logger.log_and_print(f"recall: \t {recall:04.2f}")
+            self.logger.log_and_print(f"fscore: \t {fscore:04.2f}")
+
+        return (precision, recall, fscore)
+
+    def metrics_task3(self):
+        y_true = self.ds.y_test
+        y_pred = self.predict(self.ds.x_test)
+
+        y_true = [one_hot[1] + one_hot[2] + one_hot[3] + one_hot[4] for one_hot in y_true]
+        y_pred = [one_hot[1] + one_hot[2] + one_hot[3] + one_hot[4] for one_hot in y_pred]
+        
+        #(precision, recall, fscore, _) = precision_recall_fscore_support(y_true, y_pred, average='weighted')
+        (precision, recall, fscore, _) = precision_recall_fscore_support(y_true, y_pred, average='weighted')
+
+        if self.logger is None:
+            print(f"precision: \t {precision:04.2f}")
+            print(f"recall: \t {recall:04.2f}")
+            print(f"fscore: \t {fscore:04.2f}")
+        else:
+            self.logger.log_and_print(f"precision: \t {precision:04.2f}")
+            self.logger.log_and_print(f"recall: \t {recall:04.2f}")
+            self.logger.log_and_print(f"fscore: \t {fscore:04.2f}")
+
+        return (precision, recall, fscore)
 
     @staticmethod
     def load(path: str, dataset: "DataSet", logger: "Logger" = None) -> "RandomForest":

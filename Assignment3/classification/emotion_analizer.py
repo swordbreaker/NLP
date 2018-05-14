@@ -7,13 +7,16 @@ emotional_tokens = list(nlp.pipe(emotional_words))
 
 def emotionality_component(doc):
     score = 0.
+    count = 0
     for token in doc:
         max = 0
+        if(token.is_stop): continue
+        count += 1
         for emotional_token in emotional_tokens:
             sim = token.similarity(emotional_token)
             if(sim > max): max = sim
         score += max
-    doc.user_data['emotionality'] = score/len(doc)
+    doc.user_data['emotionality'] = score/count
     return doc
 
 

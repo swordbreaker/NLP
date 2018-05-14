@@ -96,10 +96,12 @@ def rnn():
         else:
             classifier = SentimentAnalyser(ds, logger=l)
 
-        classifier.fit("checkpoints/gru/", 40)
-        classifier.validate()
-        classifier.metrics()
-        classifier.plot_confusion_matrix()
+        #classifier.fit("checkpoints/", 2)
+        #classifier.validate()
+        #classifier.metrics()
+        #classifier.plot_confusion_matrix()
+        #classifier.metrics_task2()
+        classifier.metrics_task3()
 
 def simple():
 
@@ -124,7 +126,9 @@ import classification.emotion_analizer as emotion_analizer
 
 def emotionality():
     pd = load_document()
-    texts = list(pd['review'])
+    texts = list(pd['review'][:800])
     texts = [text for text in texts if text.strip() != '']
     best = emotion_analizer.findBestEmotional(texts)
     print([(doc.user_data['emotionality'], doc.text) for doc in best[:5]])
+
+emotionality()
