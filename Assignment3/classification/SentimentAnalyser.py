@@ -57,8 +57,7 @@ class PlotLearning(keras.callbacks.Callback):
 class SentimentAnalyser(Classifier):
     """description of class"""
 
-    # max_lenght = 600
-    def __init__(self, dataset: "DataSet", n_neurons=100, verbose=1, learning_rate=0.001, max_lenght=300, logger: "Logger" = None,
+    def __init__(self, dataset: "DataSet", n_neurons=16, verbose=1, learning_rate=0.001, max_lenght=300, logger: "Logger" = None,
                 model: Sequential = None): 
         self.history = {}
         self.verbose = verbose
@@ -68,17 +67,17 @@ class SentimentAnalyser(Classifier):
         nlp.add_pipe(nlp.create_pipe('sentencizer'))
         embeddings = nlp.vocab.vectors.data # get embbedings
 
-        if(os.path.isfile("data/data_set/x_train.npy")):
-            dataset = DataSet.load("data/data_set/", dataset.class_names)
+        if(os.path.isfile("data/data_set32/x_train.npy")):
+            dataset = DataSet.load("data/data_set32/", dataset.class_names)
         else:
             self.preprocess(nlp, dataset, max_lenght)
-            dataset.save("data/data_set/")
+            dataset.save("data_set32/data_set/")
 
         dataset.y_train = keras.utils.to_categorical(dataset.y_train)
         dataset.y_val = keras.utils.to_categorical(dataset.y_val)
         dataset.y_test = keras.utils.to_categorical(dataset.y_test)
 
-        rnn_shape = {'nr_hidden': 16, 'max_length': max_lenght, 'nr_class': len(dataset.class_names)}
+        rnn_shape = {'nr_hidden': n_neurons, 'max_length': max_lenght, 'nr_class': len(dataset.class_names)}
         rnn_settings = {'dropout': 0.5, 'lr': 0.001}
 
         if model is None:

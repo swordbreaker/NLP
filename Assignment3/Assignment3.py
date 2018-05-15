@@ -85,22 +85,22 @@ def rnn():
     #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
     #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-    path = "checkpoints/gru/epoch_32-val_los_0.74.hdf5"
+    path = "checkpoints/gru32/epoch_76-val_los_0.68.hdf5"
 
-    with Logger("gru", root='') as l:
+    with Logger("gru32", root='') as l:
         l.log_and_print(ds)
         l.log("")
 
         if os.path.isfile(path):
             classifier = SentimentAnalyser.load(path, ds, logger=l)
         else:
-            classifier = SentimentAnalyser(ds, logger=l)
+            classifier = SentimentAnalyser(ds, logger=l, n_neurons = 32, max_lenght=400)
 
-        #classifier.fit("checkpoints/", 2)
+        #classifier.fit("checkpoints/gru32/", 80)
         #classifier.validate()
         #classifier.metrics()
         #classifier.plot_confusion_matrix()
-        #classifier.metrics_task2()
+        classifier.metrics_task2()
         classifier.metrics_task3()
 
 def simple():
@@ -126,9 +126,9 @@ import classification.emotion_analizer as emotion_analizer
 
 def emotionality():
     pd = load_document()
-    texts = list(pd['review'][:800])
+    texts = list(pd['review'])
     texts = [text for text in texts if text.strip() != '']
     best = emotion_analizer.findBestEmotional(texts)
     print([(doc.user_data['emotionality'], doc.text) for doc in best[:5]])
 
-emotionality()
+rnn()

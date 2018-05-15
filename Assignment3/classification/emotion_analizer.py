@@ -34,7 +34,7 @@ nlp.add_pipe(emotionality_component, last=True)
 def findBestEmotional(texts: [str]):
     scores = []
 
-    docs = nlp.pipe(texts, batch_size=100, n_threads=3)
+    docs = nlp.pipe(texts, batch_size=100, n_threads=8)
     #docs = list(reversed(sorted(docs, key=lambda d: d.user_data['emotionality'], reverse=True)))
     docs = list(sorted(docs, key=lambda d: d.user_data['emotionality'], reverse=True))
     #docs2 = list(sorted(docs, key=lambda d: d.user_data['emotionality_doc'], reverse=True))
