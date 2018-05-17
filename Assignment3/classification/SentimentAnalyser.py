@@ -132,12 +132,6 @@ class SentimentAnalyser(Classifier):
                 mask_zero=True
             )
         )
-        
-        #model.add(Reshape((300, 300, 1)))
-        
-        #model.add(Conv2D(150, kernel_size=(9, 9), strides=(1, 1), activation='relu', padding='same'))
-        #model.add(Reshape((300, 300, 0)))
-        #model.add(Masking(mask_value=0))
 
         model.add(TimeDistributed(Dense(shape['nr_hidden'], use_bias=False)))
         model.add(Bidirectional(GRU(shape['nr_hidden'],
